@@ -5,13 +5,13 @@ import { rootTypeDefs } from './root-schema';
 import { Environment } from './environment/environment';
 import { Config } from './environment/config';
 import { buildFederatedSchema } from '@apollo/federation';
-import { SeedDataSource } from './data-source/seed-data-source';
+import { LeasingDataSource } from './data-source/leasing-data-source';
 
 const app = express();
 
 const config: Config = Environment.getConfig();
 
-const seedDataSource = new SeedDataSource(config.dbConfig);
+const leasingDataSource = new LeasingDataSource(config.dbConfig);
 const server = new ApolloServer({
   schema: buildFederatedSchema([{
     typeDefs: rootTypeDefs,
@@ -19,7 +19,7 @@ const server = new ApolloServer({
   }]),
   dataSources: () => {
     return {
-      seedDataSource
+      leasingDataSource
     };
   }
 });

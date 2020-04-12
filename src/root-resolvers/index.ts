@@ -1,5 +1,5 @@
-import { resolvers as booksResolver } from '../entities/books-example/books.resolvers';
-import { resolvers as usersResolver } from '../entities/users-example/users.resolvers';
+import { resolvers as leasingResolver } from '../entities/leasing/leasing.resolvers';
 import * as _ from 'lodash';
+import { resolvers as scalarsResolver } from 'graphql-scalars';
 
-export const rootResolvers = _.merge(booksResolver, usersResolver);
+export const rootResolvers = _.merge(leasingResolver, scalarsResolver);
