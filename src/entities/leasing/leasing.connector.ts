@@ -13,6 +13,25 @@ export class LeasingConnector {
     return this.knex.select('*').from('leasing').where({ id: leasingId }).first();
   }
 
+  async getAllLeasesByLesseeId(lesseeId: number) {
+    return this.knex.select('*').from('leasing').where({ lesseeId });
+  }
+
+  async getAllOpenedRequests(lessorId: number) {
+    let subQuery = this.knex.select('id').from('product').where({ ownerId: lessorId});
+    return this.knex.select('*').from('leasing').where('productId', 'in', subQuery).andWhere('status', '=', LeasingStatus.WAITING_FOR_APPROVE);
+  }
+
+  async getAllOnGoingRequests(lessorId: number) {
+    let subQuery = this.knex.select('id').from('product').where({ ownerId: lessorId});
+    return this.knex.select('*').from('leasing').where('productId', 'in', subQuery).andWhere('status', 'in', [LeasingStatus.WAITING_FOR_DELIVERY, LeasingStatus.IN_DELIVERY, LeasingStatus.DELIVERED, LeasingStatus.NEED_TO_RETURN]);
+  }
+
+  async getAllLeasingRequests(lessorId: number) {
+    let subQuery = this.knex.select('id').from('product').where({ ownerId: lessorId});
+    return this.knex.select('*').from('leasing').where('productId', 'in', subQuery);
+  }
+
   async openLeaseRequest(leasing: Leasing) {
     return this.knex.insert(leasing).into('leasing').then(([id]) => {
       return this.getLeasingById(id);

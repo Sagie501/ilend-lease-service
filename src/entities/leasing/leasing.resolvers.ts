@@ -1,4 +1,18 @@
 export const resolvers = {
+  Query: {
+    getAllLeasesByLesseeId: async (source, args, { dataSources }) => {
+      return await dataSources.leasingDataSource.leasingConnector.getAllLeasesByLesseeId(args.lesseeId);
+    },
+    getAllOpenedRequests: async (source, args, { dataSources }) => {
+      return await dataSources.leasingDataSource.leasingConnector.getAllOpenedRequests(args.lessorId);
+    },
+    getAllOnGoingRequests: async (source, args, { dataSources }) => {
+      return await dataSources.leasingDataSource.leasingConnector.getAllOnGoingRequests(args.lessorId);
+    },
+    getAllLeasingRequests: async (source, args, { dataSources }) => {
+      return await dataSources.leasingDataSource.leasingConnector.getAllLeasingRequests(args.lessorId);
+    }
+  },
   Mutation: {
     openLeaseRequest: async (source, args, { dataSources }) => {
       return await dataSources.leasingDataSource.leasingConnector.openLeaseRequest(args.leasing);
@@ -9,10 +23,10 @@ export const resolvers = {
   },
   Leasing: {
     product: (leasing) => {
-      return { __typename: "Product", id: leasing.productId };
+      return { __typename: 'Product', id: leasing.productId };
     },
     lessee: (leasing) => {
-      return { __typename: "User", id: leasing.lesseeId };
+      return { __typename: 'User', id: leasing.lesseeId };
     }
   }
 };

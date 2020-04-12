@@ -8,6 +8,7 @@ export const leasingStatusTypeDefs = gql`
     WAITING_FOR_DELIVERY
     IN_DELIVERY
     DELIVERED
+    NEED_TO_RETURN
     RETURNED
   }
 `;

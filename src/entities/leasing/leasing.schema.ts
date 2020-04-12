@@ -18,6 +18,13 @@ export const typeDefs = gql`
     startDate: Long
     endDate: Long
   }
+  
+  extend type Query {
+    getAllLeasesByLesseeId(lesseeId: ID!): [Leasing]
+    getAllOpenedRequests(lessorId: ID!): [Leasing]
+    getAllOnGoingRequests(lessorId: ID!): [Leasing]
+    getAllLeasingRequests(lessorId: ID!): [Leasing]
+  }
 
   extend type Mutation {
     openLeaseRequest(leasing: LeasingInput!): Leasing
