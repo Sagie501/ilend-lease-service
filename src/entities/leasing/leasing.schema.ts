@@ -21,6 +21,7 @@ export const typeDefs = gql`
 
   extend type Mutation {
     openLeaseRequest(leasing: LeasingInput!): Leasing
+    setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus) : Leasing
   }
   
   extend type User @key(fields: "id") {
