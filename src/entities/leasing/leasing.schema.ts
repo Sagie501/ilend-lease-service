@@ -24,6 +24,7 @@ export const typeDefs = gql`
     getAllOpenedRequests(lessorId: ID!): [Leasing]
     getAllOnGoingRequests(lessorId: ID!): [Leasing]
     getAllLeasingRequests(lessorId: ID!): [Leasing]
+    getAllLeasings: [Leasing]
   }
 
   extend type Mutation {
