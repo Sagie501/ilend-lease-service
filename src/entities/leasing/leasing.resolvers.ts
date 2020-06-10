@@ -11,6 +11,9 @@ export const resolvers = {
     },
     getAllLeasingRequests: async (source, args, { dataSources }) => {
       return await dataSources.leasingDataSource.leasingConnector.getAllLeasingRequests(args.lessorId);
+    },
+    getAllLeasings: async (source, args, { dataSources }) => {
+      return await dataSources.leasingDataSource.leasingConnector.getAllLeasings();
     }
   },
   Mutation: {

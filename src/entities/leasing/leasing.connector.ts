@@ -32,6 +32,10 @@ export class LeasingConnector {
     return this.knex.select('*').from('leasing').where('productId', 'in', subQuery);
   }
 
+  async getAllLeasings() {
+    return this.knex.select('*').from('leasing');
+  }
+
   async openLeaseRequest(leasing: Leasing) {
     return this.knex.insert(leasing).into('leasing').then(([id]) => {
       return this.getLeasingById(id);
