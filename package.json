@@ -14,26 +14,23 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/federation": "^0.14.0",
-    "apollo-datasource": "^0.7.0",
+    "@apollo/federation": "^0.16.5",
+    "apollo-datasource": "^0.7.1",
     "apollo-server-caching": "^0.5.1",
-    "apollo-server-express": "^2.12.0",
-    "crypto": "^1.0.1",
+    "apollo-server-express": "^2.14.3",
     "express": "^4.17.1",
-    "graphql": "14.6.0",
-    "graphql-scalars": "^1.1.0",
-    "knex": "^0.20.13",
-    "lodash": "^4.17.15",
-    "merge-graphql-schemas": "^1.7.7",
+    "graphql": "~15.0.0",
+    "graphql-scalars": "^1.1.5",
+    "graphql-tools": "^6.0.9",
+    "knex": "^0.21.1",
     "mysql": "^2.18.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.4",
-    "@types/lodash": "^4.14.149",
-    "@types/node": "^13.11.0",
-    "nodemon": "^2.0.2",
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.0.13",
+    "nodemon": "^2.0.4",
     "rimraf": "^3.0.2",
-    "ts-node": "^8.8.2",
-    "typescript": "^3.8.3"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   }
 }

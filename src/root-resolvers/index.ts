@@ -1,5 +1,5 @@
 import { resolvers as leasingResolver } from '../entities/leasing/leasing.resolvers';
-import * as _ from 'lodash';
 import { resolvers as scalarsResolver } from 'graphql-scalars';
+import { mergeResolvers } from '@graphql-tools/merge';
 
-export const rootResolvers = _.merge(leasingResolver, scalarsResolver);
+export const rootResolvers = mergeResolvers([leasingResolver, scalarsResolver]);
