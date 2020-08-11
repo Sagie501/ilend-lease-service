@@ -6,6 +6,9 @@ export const resolvers = {
     getAllOpenedRequests: async (source, args, { dataSources }) => {
       return await dataSources.leasingDataSource.leasingConnector.getAllOpenedRequests(args.lessorId);
     },
+    getAllOnGoingDeliveriesRequests: async (source, args, { dataSources }) => {
+      return await dataSources.leasingDataSource.leasingConnector.getAllOnGoingDeliveriesRequests(args.lessorId);
+    },
     getAllOnGoingRequests: async (source, args, { dataSources }) => {
       return await dataSources.leasingDataSource.leasingConnector.getAllOnGoingRequests(args.lessorId);
     },
