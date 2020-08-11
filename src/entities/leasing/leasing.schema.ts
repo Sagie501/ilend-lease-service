@@ -7,6 +7,7 @@ export const typeDefs = gql`
     # transactionId: 
     lessee: User
     product: Product
+    deliveryStatus: DeliveryStatus
     status: LeasingStatus
     startDate: Long
     endDate: Long
