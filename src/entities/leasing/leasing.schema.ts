@@ -22,6 +22,7 @@ export const typeDefs = gql`
   extend type Query {
     getAllLeasesByLesseeId(lesseeId: ID!): [Leasing]
     getAllOpenedRequests(lessorId: ID!): [Leasing]
+    getAllOnGoingDeliveriesRequests(lessorId: ID!): [Leasing]
     getAllOnGoingRequests(lessorId: ID!): [Leasing]
     getAllLeasingRequests(lessorId: ID!): [Leasing]
     getAllLeasings: [Leasing]
