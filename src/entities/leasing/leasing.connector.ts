@@ -41,6 +41,18 @@ export class LeasingConnector {
       .andWhere("status", "=", LeasingStatus.WAITING_FOR_APPROVE);
   }
 
+  async getAllOnGoingDeliveriesRequests(lessorId: number) {
+    let subQuery = this.knex
+      .select("id")
+      .from("product")
+      .where({ ownerId: lessorId });
+    return this.knex
+      .select("*")
+      .from("leasing")
+      .where("productId", "in", subQuery)
+      .andWhere("status", "=", LeasingStatus.IN_DELIVERY);
+  }
+
   async getAllOnGoingRequests(lessorId: number) {
     let subQuery = this.knex
       .select("id")
@@ -52,7 +64,6 @@ export class LeasingConnector {
       .where("productId", "in", subQuery)
       .andWhere("status", "in", [
         LeasingStatus.WAITING_FOR_DELIVERY,
-        LeasingStatus.IN_DELIVERY,
         LeasingStatus.DELIVERED,
         LeasingStatus.NEED_TO_RETURN,
       ]);
