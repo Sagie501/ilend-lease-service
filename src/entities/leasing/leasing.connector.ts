@@ -98,45 +98,44 @@ export class LeasingConnector {
     });
   }
 
-  async openLeaseRequest(
-    leasing: Leasing,
-    cardNonce: string,
-    price: number,
-    user: User
-  ) {
-    return new Promise((resolve, reject) => {
-      this.gateway.transaction.sale(
-        {
-          amount: price,
-          paymentMethodNonce: cardNonce,
-          customer: {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-          },
-        },
-        (err, result) => {
-          if (result.success) {
-            leasing.transactionId = result.transaction.id;
-            console.dir(result);
+  async openLeaseRequest(leasing: Leasing, cardNonce: string, price: number) {
+    return new Promise(
+      (resolve, reject) => {
+        //   this.gateway.transaction.sale(
+        //     {
+        //       amount: price,
+        //       paymentMethodNonce: cardNonce,
+        //       customer: {
+        //         firstName: user.firstName,
+        //         lastName: user.lastName,
+        //         email: user.email,
+        //       },
+        //     },
+        //     (err, result) => {
+        //       if (result.success) {
+        //         leasing.transactionId = result.transaction.id;
+        //         console.dir(result);
 
-            this.knex
-              .insert(leasing)
-              .into("leasing")
-              .then(
-                ([id]) => {
-                  resolve(this.getLeasingById(id));
-                },
-                (err) => {
-                  reject(err.sqlMessage);
-                }
-              );
-          } else {
-            reject(result.message);
-          }
-        }
-      );
-    });
+        leasing.total_price = price;
+        leasing.payment_method = cardNonce;
+
+        this.knex
+          .insert(leasing)
+          .into("leasing")
+          .then(
+            ([id]) => {
+              resolve(this.getLeasingById(id));
+            },
+            (err) => {
+              reject(err.sqlMessage);
+            }
+          );
+        // } else {
+        //   reject(result.message);
+        // }
+      }
+      //   );
+    );
   }
 
   async handlePayment(leasingID: number) {

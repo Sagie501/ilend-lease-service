@@ -55,7 +55,6 @@ export const typeDefs = gql`
       leasing: LeasingInput!
       cardNonce: String!
       price: Float
-      user: UserInput!
     ): Leasing
     setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus): Leasing
   }
