@@ -128,7 +128,6 @@ export class LeasingConnector {
             .where({ id: leasing.lesseeId })
             .then((users) => {
               let user: User = users[0];
-              console.dir(user);
 
               this.gateway.transaction.sale(
                 {
@@ -143,12 +142,9 @@ export class LeasingConnector {
                 (err, result) => {
                   if (result.success) {
                     leasing.transactionId = result.transaction.id;
-                    console.dir(result);
-                    console.dir(leasing);
-
                     resolve(result.transaction.id as string);
                   } else {
-                    reject(`Error: ${result.message}`);
+                    reject(result.message);
                   }
                 }
               );
