@@ -118,6 +118,7 @@ export class LeasingConnector {
         (err, result) => {
           if (result.success) {
             leasing.transactionId = result.transaction.id;
+            console.dir(result);
 
             this.knex
               .insert(leasing)
@@ -138,7 +139,20 @@ export class LeasingConnector {
     });
   }
 
+  async handlePayment(leasingID: number) {
+    return this.knex("leasing")
+      .where({ id: leasingID })
+      .then((leasings) => {
+        let leasing = leasings[0];
+        console.dir(leasing);
+
+        return leasing;
+      });
+  }
+
   async setLeaseRequestStatus(leasingId: number, status: LeasingStatus) {
+    await this.handlePayment(leasingId);
+
     return this.knex("leasing")
       .where({ id: leasingId })
       .update({ status })
