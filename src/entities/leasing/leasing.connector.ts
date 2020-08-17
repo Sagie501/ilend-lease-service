@@ -108,6 +108,7 @@ export class LeasingConnector {
         .into("leasing")
         .then(
           ([id]) => {
+            console.log(id);
             resolve(this.getLeasingById(id));
           },
           (err) => {
