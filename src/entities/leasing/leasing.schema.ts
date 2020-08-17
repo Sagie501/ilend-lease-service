@@ -11,6 +11,7 @@ export const typeDefs = gql`
     status: LeasingStatus
     startDate: Long
     endDate: Long
+    price: Float
   }
 
   input LeasingInput {
