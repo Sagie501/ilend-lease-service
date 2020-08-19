@@ -164,7 +164,7 @@ export class LeasingConnector {
       startDate?: number;
     } = { status };
 
-    if (status === LeasingStatus.WAITING_FOR_DELIVERY) {
+    if (status === LeasingStatus.IN_DELIVERY) {
       updateObject = {
         ...updateObject,
         transactionId: await this.handlePayment(leasingId),
