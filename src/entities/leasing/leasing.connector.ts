@@ -98,50 +98,72 @@ export class LeasingConnector {
     });
   }
 
-  async openLeaseRequest(
-    leasing: Leasing,
-    cardNonce: string,
-    price: number,
-    user: User
-  ) {
+  async openLeaseRequest(leasing: Leasing, cardNonce: string, price: number) {
     return new Promise((resolve, reject) => {
-      this.gateway.transaction.sale(
-        {
-          amount: price,
-          paymentMethodNonce: cardNonce,
-          customer: {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-          },
-        },
-        (err, result) => {
-          if (result.success) {
-            leasing.transactionId = result.transaction.id;
+      leasing.total_price = price;
+      leasing.payment_method = cardNonce;
 
-            this.knex
-              .insert(leasing)
-              .into("leasing")
-              .then(
-                ([id]) => {
-                  resolve(this.getLeasingById(id));
+      this.knex
+        .insert(leasing)
+        .into("leasing")
+        .then(
+          ([id]) => {
+            console.log(id);
+            resolve(this.getLeasingById(id));
+          },
+          (err) => {
+            reject(err.sqlMessage);
+          }
+        );
+    });
+  }
+
+  async handlePayment(leasingID: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.knex("leasing")
+        .where({ id: leasingID })
+        .then((leasings) => {
+          let leasing: Leasing = leasings[0];
+
+          this.knex("user")
+            .where({ id: leasing.lesseeId })
+            .then((users) => {
+              let user: User = users[0];
+
+              this.gateway.transaction.sale(
+                {
+                  amount: leasing.total_price,
+                  paymentMethodNonce: leasing.payment_method,
+                  customer: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                  },
                 },
-                (err) => {
-                  reject(err.sqlMessage);
+                (err, result) => {
+                  if (result.success) {
+                    leasing.transactionId = result.transaction.id;
+                    resolve(result.transaction.id as string);
+                  } else {
+                    reject(result.message);
+                  }
                 }
               );
-          } else {
-            reject(result.message);
-          }
-        }
-      );
+            });
+        });
     });
   }
 
   async setLeaseRequestStatus(leasingId: number, status: LeasingStatus) {
+    let transactionId = null;
+
+    if (status === LeasingStatus.WAITING_FOR_DELIVERY) {
+      transactionId = await this.handlePayment(leasingId);
+    }
+
     return this.knex("leasing")
       .where({ id: leasingId })
-      .update({ status })
+      .update({ status, transactionId })
       .then(
         (id) => {
           return this.getLeasingById(id);

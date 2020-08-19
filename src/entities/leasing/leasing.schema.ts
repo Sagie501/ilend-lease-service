@@ -4,13 +4,14 @@ import { gql } from "apollo-server-express";
 export const typeDefs = gql`
   type Leasing {
     id: ID
-    # transactionId:
+    transactionId: String
     lessee: User
     product: Product
     deliveryStatus: DeliveryStatus
     status: LeasingStatus
     startDate: Long
     endDate: Long
+    total_price: Float
   }
 
   input LeasingInput {
@@ -55,7 +56,6 @@ export const typeDefs = gql`
       leasing: LeasingInput!
       cardNonce: String!
       price: Float
-      user: UserInput!
     ): Leasing
     setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus): Leasing
   }
