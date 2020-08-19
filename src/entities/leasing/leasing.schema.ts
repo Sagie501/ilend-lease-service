@@ -9,6 +9,7 @@ export const typeDefs = gql`
     product: Product
     deliveryStatus: DeliveryStatus
     status: LeasingStatus
+    creationDate: Long
     startDate: Long
     endDate: Long
     total_price: Float
@@ -17,7 +18,7 @@ export const typeDefs = gql`
   input LeasingInput {
     lesseeId: ID!
     productId: ID!
-    startDate: Long
+    creationDate: Long
     endDate: Long
   }
 
@@ -44,7 +45,7 @@ export const typeDefs = gql`
   extend type Query {
     getAllLeasesByLesseeId(lesseeId: ID!): [Leasing]
     getAllOpenedRequests(lessorId: ID!): [Leasing]
-    getAllOnGoingDeliveriesRequests(lessorId: ID!): [Leasing]
+    getAllOnGoingDeliveriesRequests(lesseeId: ID!): [Leasing]
     getAllOnGoingRequests(lessorId: ID!): [Leasing]
     getAllLeasingRequests(lessorId: ID!): [Leasing]
     getAllLeasings: [Leasing]

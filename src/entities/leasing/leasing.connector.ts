@@ -41,15 +41,11 @@ export class LeasingConnector {
       .andWhere("status", "=", LeasingStatus.WAITING_FOR_APPROVE);
   }
 
-  async getAllOnGoingDeliveriesRequests(lessorId: number) {
-    let subQuery = this.knex
-      .select("id")
-      .from("product")
-      .where({ ownerId: lessorId });
+  async getAllOnGoingDeliveriesRequests(lesseeId: number) {
     return this.knex
       .select("*")
       .from("leasing")
-      .where("productId", "in", subQuery)
+      .where({ lesseeId })
       .andWhere("status", "=", LeasingStatus.IN_DELIVERY);
   }
 
@@ -139,6 +135,9 @@ export class LeasingConnector {
                     lastName: user.lastName,
                     email: user.email,
                   },
+                  options: {
+                    submitForSettlement: true,
+                  },
                 },
                 (err, result) => {
                   if (result.success) {
@@ -155,15 +154,23 @@ export class LeasingConnector {
   }
 
   async setLeaseRequestStatus(leasingId: number, status: LeasingStatus) {
-    let transactionId = null;
+    let updateObject: {
+      status: LeasingStatus;
+      transactionId?: string;
+      startDate?: number;
+    } = { status };
 
-    if (status === LeasingStatus.WAITING_FOR_DELIVERY) {
-      transactionId = await this.handlePayment(leasingId);
+    if (status === LeasingStatus.IN_DELIVERY) {
+      updateObject = {
+        ...updateObject,
+        transactionId: await this.handlePayment(leasingId),
+        startDate: new Date().getTime(),
+      };
     }
 
     return this.knex("leasing")
       .where({ id: leasingId })
-      .update({ status, transactionId })
+      .update(updateObject)
       .then(
         (id) => {
           return this.getLeasingById(id);
