@@ -9,6 +9,7 @@ export const typeDefs = gql`
     product: Product
     deliveryStatus: DeliveryStatus
     status: LeasingStatus
+    creationDate: Long
     startDate: Long
     endDate: Long
     total_price: Float
@@ -17,7 +18,7 @@ export const typeDefs = gql`
   input LeasingInput {
     lesseeId: ID!
     productId: ID!
-    startDate: Long
+    creationDate: Long
     endDate: Long
   }
 

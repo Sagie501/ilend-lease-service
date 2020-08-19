@@ -139,6 +139,9 @@ export class LeasingConnector {
                     lastName: user.lastName,
                     email: user.email,
                   },
+                  options: {
+                    submitForSettlement: true,
+                  },
                 },
                 (err, result) => {
                   if (result.success) {
@@ -155,15 +158,23 @@ export class LeasingConnector {
   }
 
   async setLeaseRequestStatus(leasingId: number, status: LeasingStatus) {
-    let transactionId = null;
+    let updateObject: {
+      status: LeasingStatus;
+      transactionId?: string;
+      startDate?: number;
+    } = { status };
 
     if (status === LeasingStatus.WAITING_FOR_DELIVERY) {
-      transactionId = await this.handlePayment(leasingId);
+      updateObject = {
+        ...updateObject,
+        transactionId: await this.handlePayment(leasingId),
+        startDate: new Date().getTime(),
+      };
     }
 
     return this.knex("leasing")
       .where({ id: leasingId })
-      .update({ status, transactionId })
+      .update(updateObject)
       .then(
         (id) => {
           return this.getLeasingById(id);

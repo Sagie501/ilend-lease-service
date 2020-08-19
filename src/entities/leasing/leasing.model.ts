@@ -11,6 +11,7 @@ export interface Leasing {
   productId: number;
   deliveryStatus: DeliveryStatus;
   status: LeasingStatus;
+  creationDate: number;
   startDate: number;
   endDate: number;
 }
