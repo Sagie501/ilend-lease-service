@@ -11,7 +11,9 @@ export const resolvers = {
       );
     },
     getAllOnGoingDeliveriesRequests: async (source, args, { dataSources }) => {
-      return await dataSources.leasingDataSource.leasingConnector.getAllOnGoingDeliveriesRequests(args.lessorId);
+      return await dataSources.leasingDataSource.leasingConnector.getAllOnGoingDeliveriesRequests(
+        args.lesseeId
+      );
     },
     getAllOnGoingRequests: async (source, args, { dataSources }) => {
       return await dataSources.leasingDataSource.leasingConnector.getAllOnGoingRequests(

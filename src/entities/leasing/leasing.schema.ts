@@ -4,19 +4,21 @@ import { gql } from "apollo-server-express";
 export const typeDefs = gql`
   type Leasing {
     id: ID
-    # transactionId:
+    transactionId: String
     lessee: User
     product: Product
     deliveryStatus: DeliveryStatus
     status: LeasingStatus
+    creationDate: Long
     startDate: Long
     endDate: Long
+    total_price: Float
   }
 
   input LeasingInput {
     lesseeId: ID!
     productId: ID!
-    startDate: Long
+    creationDate: Long
     endDate: Long
   }
 
@@ -43,7 +45,7 @@ export const typeDefs = gql`
   extend type Query {
     getAllLeasesByLesseeId(lesseeId: ID!): [Leasing]
     getAllOpenedRequests(lessorId: ID!): [Leasing]
-    getAllOnGoingDeliveriesRequests(lessorId: ID!): [Leasing]
+    getAllOnGoingDeliveriesRequests(lesseeId: ID!): [Leasing]
     getAllOnGoingRequests(lessorId: ID!): [Leasing]
     getAllLeasingRequests(lessorId: ID!): [Leasing]
     getAllLeasings: [Leasing]
@@ -55,7 +57,6 @@ export const typeDefs = gql`
       leasing: LeasingInput!
       cardNonce: String!
       price: Float
-      user: UserInput!
     ): Leasing
     setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus, deliveryStatus: DeliveryStatus): Leasing
   }

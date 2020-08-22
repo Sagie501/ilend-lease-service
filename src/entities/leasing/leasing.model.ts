@@ -5,10 +5,13 @@ import { DeliveryStatus } from "../../enums/delivery-status/delivery-status.enum
 export interface Leasing {
   id: number;
   transactionId: string;
+  payment_method: string;
+  total_price: number;
   lesseeId: number;
   productId: number;
   deliveryStatus: DeliveryStatus;
   status: LeasingStatus;
+  creationDate: number;
   startDate: number;
   endDate: number;
 }

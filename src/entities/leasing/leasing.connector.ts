@@ -7,7 +7,6 @@ import { DeliveryStatus } from "../../enums/delivery-status/delivery-status.enum
 export class LeasingConnector {
   private knex: Knex;
   private gateway;
-
   constructor(knex: Knex) {
     this.knex = knex;
     this.gateway = braintree.connect({
@@ -42,15 +41,11 @@ export class LeasingConnector {
       .andWhere("status", "=", LeasingStatus.WAITING_FOR_APPROVE);
   }
 
-  async getAllOnGoingDeliveriesRequests(lessorId: number) {
-    let subQuery = this.knex
-      .select("id")
-      .from("product")
-      .where({ ownerId: lessorId });
+  async getAllOnGoingDeliveriesRequests(lesseeId: number) {
     return this.knex
       .select("*")
       .from("leasing")
-      .where("productId", "in", subQuery)
+      .where({ lesseeId })
       .andWhere("status", "=", LeasingStatus.IN_DELIVERY);
   }
 
@@ -99,50 +94,84 @@ export class LeasingConnector {
     });
   }
 
-  async openLeaseRequest(
-    leasing: Leasing,
-    cardNonce: string,
-    price: number,
-    user: User
-  ) {
+  async openLeaseRequest(leasing: Leasing, cardNonce: string, price: number) {
     return new Promise((resolve, reject) => {
-      this.gateway.transaction.sale(
-        {
-          amount: price,
-          paymentMethodNonce: cardNonce,
-          customer: {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-          },
-        },
-        (err, result) => {
-          if (result.success) {
-            leasing.transactionId = result.transaction.id;
+      leasing.total_price = price;
+      leasing.payment_method = cardNonce;
 
-            this.knex
-              .insert(leasing)
-              .into("leasing")
-              .then(
-                ([id]) => {
-                  resolve(this.getLeasingById(id));
+      this.knex
+        .insert(leasing)
+        .into("leasing")
+        .then(
+          ([id]) => {
+            console.log(id);
+            resolve(this.getLeasingById(id));
+          },
+          (err) => {
+            reject(err.sqlMessage);
+          }
+        );
+    });
+  }
+
+  async handlePayment(leasingID: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.knex("leasing")
+        .where({ id: leasingID })
+        .then((leasings) => {
+          let leasing: Leasing = leasings[0];
+
+          this.knex("user")
+            .where({ id: leasing.lesseeId })
+            .then((users) => {
+              let user: User = users[0];
+
+              this.gateway.transaction.sale(
+                {
+                  amount: leasing.total_price,
+                  paymentMethodNonce: leasing.payment_method,
+                  customer: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                  },
+                  options: {
+                    submitForSettlement: true,
+                  },
                 },
-                (err) => {
-                  reject(err.sqlMessage);
+                (err, result) => {
+                  if (result.success) {
+                    leasing.transactionId = result.transaction.id;
+                    resolve(result.transaction.id as string);
+                  } else {
+                    reject(result.message);
+                  }
                 }
               );
-          } else {
-            reject(result.message);
-          }
-        }
-      );
+            });
+        });
     });
   }
 
   async setLeaseRequestStatus(leasingId: number, status: LeasingStatus, deliveryStatus: DeliveryStatus) {
+    let updateObject: {
+      status: LeasingStatus;
+      deliveryStatus: DeliveryStatus;
+      transactionId?: string;
+      startDate?: number;
+    } = { status, deliveryStatus };
+
+    if (status === LeasingStatus.IN_DELIVERY) {
+      updateObject = {
+        ...updateObject,
+        transactionId: await this.handlePayment(leasingId),
+        startDate: new Date().getTime(),
+      };
+    }
+
     return this.knex("leasing")
       .where({ id: leasingId })
-      .update({ status, deliveryStatus })
+      .update(updateObject)
       .then(
         (id) => {
           return this.getLeasingById(id);
