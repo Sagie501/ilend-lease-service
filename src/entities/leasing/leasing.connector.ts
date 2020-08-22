@@ -173,8 +173,8 @@ export class LeasingConnector {
       .where({ id: leasingId })
       .update(updateObject)
       .then(
-        (id) => {
-          return this.getLeasingById(id);
+        () => {
+          return this.getLeasingById(leasingId);
         },
         (err) => {
           throw new Error(err.sqlMessage);
