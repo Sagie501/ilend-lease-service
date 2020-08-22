@@ -2,6 +2,7 @@ import Knex from "knex";
 import { Leasing, User } from "./leasing.model";
 import { LeasingStatus } from "../../enums/leasing-status/leasing-status.enum";
 import * as braintree from "braintree";
+import { DeliveryStatus } from "../../enums/delivery-status/delivery-status.enum";
 
 export class LeasingConnector {
   private knex: Knex;
@@ -138,10 +139,10 @@ export class LeasingConnector {
     });
   }
 
-  async setLeaseRequestStatus(leasingId: number, status: LeasingStatus) {
+  async setLeaseRequestStatus(leasingId: number, status: LeasingStatus, deliveryStatus: DeliveryStatus) {
     return this.knex("leasing")
       .where({ id: leasingId })
-      .update({ status })
+      .update({ status, deliveryStatus })
       .then(
         (id) => {
           return this.getLeasingById(id);

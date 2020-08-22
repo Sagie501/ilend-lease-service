@@ -57,7 +57,7 @@ export const typeDefs = gql`
       price: Float
       user: UserInput!
     ): Leasing
-    setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus): Leasing
+    setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus, deliveryStatus: DeliveryStatus): Leasing
   }
 
   extend type User @key(fields: "id") {
