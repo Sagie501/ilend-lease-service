@@ -44,7 +44,8 @@ export const resolvers = {
     setLeaseRequestStatus: async (source, args, { dataSources }) => {
       return await dataSources.leasingDataSource.leasingConnector.setLeaseRequestStatus(
         args.leasingId,
-        args.status
+        args.status,
+        args.deliveryStatus
       );
     },
   },

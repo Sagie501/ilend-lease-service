@@ -2,11 +2,11 @@ import Knex from "knex";
 import { Leasing, User } from "./leasing.model";
 import { LeasingStatus } from "../../enums/leasing-status/leasing-status.enum";
 import * as braintree from "braintree";
+import { DeliveryStatus } from "../../enums/delivery-status/delivery-status.enum";
 
 export class LeasingConnector {
   private knex: Knex;
   private gateway;
-
   constructor(knex: Knex) {
     this.knex = knex;
     this.gateway = braintree.connect({
@@ -154,12 +154,13 @@ export class LeasingConnector {
     });
   }
 
-  async setLeaseRequestStatus(leasingId: number, status: LeasingStatus) {
+  async setLeaseRequestStatus(leasingId: number, status: LeasingStatus, deliveryStatus: DeliveryStatus) {
     let updateObject: {
       status: LeasingStatus;
+      deliveryStatus: DeliveryStatus;
       transactionId?: string;
       startDate?: number;
-    } = { status };
+    } = { status, deliveryStatus };
 
     if (status === LeasingStatus.IN_DELIVERY) {
       updateObject = {
@@ -173,8 +174,8 @@ export class LeasingConnector {
       .where({ id: leasingId })
       .update(updateObject)
       .then(
-        (id) => {
-          return this.getLeasingById(id);
+        () => {
+          return this.getLeasingById(leasingId);
         },
         (err) => {
           throw new Error(err.sqlMessage);

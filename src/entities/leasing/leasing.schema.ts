@@ -58,7 +58,7 @@ export const typeDefs = gql`
       cardNonce: String!
       price: Float
     ): Leasing
-    setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus): Leasing
+    setLeaseRequestStatus(leasingId: ID!, status: LeasingStatus, deliveryStatus: DeliveryStatus): Leasing
   }
 
   extend type User @key(fields: "id") {
