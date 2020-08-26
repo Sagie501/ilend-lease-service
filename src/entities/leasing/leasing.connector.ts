@@ -60,6 +60,7 @@ export class LeasingConnector {
       .where("productId", "in", subQuery)
       .andWhere("status", "in", [
         LeasingStatus.WAITING_FOR_DELIVERY,
+        LeasingStatus.IN_DELIVERY,
         LeasingStatus.DELIVERED,
         LeasingStatus.NEED_TO_RETURN,
       ]);
