@@ -23,7 +23,7 @@
     "graphql": "~15.0.0",
     "graphql-scalars": "^1.2.1",
     "graphql-tools": "^6.0.9",
-    "knex": "^0.21.1",
+    "knex": "^2.4.0",
     "mysql": "^2.18.1"
   },
   "devDependencies": {
